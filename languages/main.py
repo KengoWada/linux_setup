@@ -1,52 +1,34 @@
-import subprocess
-from os import environ
-import time
+from utils import BaseInstaller
 
-home = environ['HOME']
+__all__ = ('language_installer', )
 
-
-def get_java():
-    print('Installing Java')
-    time.sleep(2)
-    subprocess.call('sudo apt install default-jre', shell=True)
-    subprocess.call('sudo apt install default-jdk', shell=True)
-
-
-def get_node():
-    print('Installing Node.js with NVM')
-    time.sleep(2)
-    subprocess.call('sudo apt install curl', shell=True)
-    curl_link = 'curl -sL https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh -o install_nvm.sh'
-
-    subprocess.call(curl_link, shell=True, cwd=home)
-    subprocess.call('bash install_nvm.sh', shell=True, cwd=home)
-    subprocess.call('nvm install --lts', shell=True)
-    subprocess.call('nvm use --lts', shell=True)
-
-
-def get_php():
-    print('Installing PHP')
-    time.sleep(2)
-    subprocess.call('sudo apt-get install php libapache2-mod-php', shell=True)
-
-
-def get_python():
-    print('Installing Python3')
-    time.sleep(2)
-    subprocess.call('sudo apt install python3 python3-pip', shell=True)
+OPTIONS = [
+    {
+        "id": 1,
+        "name": "Java",
+        # https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-on-ubuntu-22-04
+        "install_steps": [
+            "sudo apt install default-jre default-jdk -y",
+        ]
+    },
+    {
+        "id": 2,
+        "name": "NodeJS",
+        # https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-on-ubuntu-22-04
+        "install_steps": [
+            "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash",
+            "nvm install --lts",
+        ]
+    },
+    {
+        "id": 3,
+        "name": "PHP",
+        # https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-on-ubuntu-22-04#step-3-installing-php
+        "install_steps": [
+            "sudo apt install php -y"
+        ]
+    },
+]
 
 
-cases = {
-    '1': get_java,
-    '2': get_php,
-    '3': get_node,
-    '4': get_python
-}
-
-
-def install_language(languageList):
-    for i in languageList:
-        function = cases.get(i, lambda: 'Invalid value')
-
-        function()
-        subprocess.call('clear', shell=True)
+language_installer = BaseInstaller(OPTIONS)

@@ -1,63 +1,51 @@
-import subprocess
-import time
+from utils import BaseInstaller
 
+__all__ = ("ide_installer", )
 
-def get_android_studio():
-    print('Installing Android Studio')
-    time.sleep(2)
-    subprocess.call('sudo snap install android-studio --classic', shell=True)
+OPTIONS = [
+    {
+        "id": 1,
+        "name": "Android Studio",
+        # https://itslinuxfoss.com/install-android-studio-ubuntu-22-04/
+        "install_steps": [
+            "sudo apt install openjdk-11-jdk",
+            # https://launchpad.net/~maarten-fonville/+archive/ubuntu/android-studio
+            "sudo add-apt-repository ppa:maarten-fonville/android-studio",
+            "sudo apt update",
+            "sudo apt install android-studio -y",
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Sublime Text",
+        # https://linuxhint.com/install-sublime-text3-ubuntu-22-04/
+        "install_steps": [
+            "curl -fsSL https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add",
+            "sudo add-apt-repository 'deb https://download.sublimetext.com/ apt/stable/'",
+            "sudo apt install sublime-text",
+        ]
+    },
+    {
+        "id": 3,
+        "name": "Codium",
+        # https://vscodium.com/#install-on-debian-ubuntu-deb-package
+        "install_steps": [
+            "wget -qO - https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg | " +\
+                "gpg --dearmor | sudo dd of=/usr/share/keyrings/vscodium-archive-keyring.gpg",
+            "echo 'deb [ signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg ] " +\
+                "https://download.vscodium.com/debs vscodium main' | sudo tee /etc/apt/sources.list.d/vscodium.list",
+            "sudo apt update && sudo apt install codium -y"
+        ]
+    },
+    {
+        "id": 4,
+        "name": "VSCode",
+        # https://code.visualstudio.com/docs/setup/linux#_debian-and-ubuntu-based-distributions
+        "install_steps": [
+            "wget -c https://go.microsoft.com/fwlink/?LinkID=760868 -P ~/Downloads -O vscode.deb",
+            "sudo apt install ~/Downloads/vscode.deb",
+        ]
+    }
+]
 
-
-def get_atom():
-    print('Installing Atom')
-    time.sleep(2)
-    subprocess.call('sudo snap install atom --classic', shell=True)
-
-
-def get_pycharm():
-    print('Installing PyCharm CE')
-    time.sleep(2)
-    subprocess.call(
-        'sudo snap install pycharm-community --classic', shell=True)
-
-
-def get_sublime_text():
-    print('Installing Sublime Text')
-    time.sleep(2)
-    subprocess.call('sudo snap install sublime-text --classic', shell=True)
-
-
-def get_vscode():
-    print('Installing VS Code')
-    time.sleep(2)
-    subprocess.call('sudo snap install code --classic', shell=True)
-
-
-def get_webstorm():
-    print('WebStorm')
-    time.sleep(2)
-    subprocess.call('sudo snap install webstorm --classic', shell=True)
-
-
-cases = {
-    '1': get_vscode,
-    '2': get_sublime_text,
-    '3': get_atom,
-    '4': get_android_studio,
-    '5': get_pycharm,
-    '6': get_webstorm
-}
-
-
-def install_editors(editors_list):
-    print('This will use Snap packages')
-    time.sleep(2)
-
-    print('Installing Snap')
-    subprocess.call('sudo apt install snapd', shell=True)
-
-    for i in editors_list:
-        function = cases.get(i, lambda: 'Invalid Value')
-
-        function()
-        subprocess.call('clear', shell=True)
+ide_installer = BaseInstaller(OPTIONS)
